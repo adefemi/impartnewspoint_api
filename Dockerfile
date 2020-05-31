@@ -9,4 +9,4 @@ WORKDIR /django_api
 
 COPY . /django_api/
 
-RUN pip install --upgrade pip && pip install pip-tools && pip install -r requirements.txt
+RUN pip install -r requirements.txt
