@@ -12,7 +12,7 @@ class BlogView(ModelViewSet):
 
     def get_queryset(self):
         query = self.request.query_params.dict()
-        keyword = query.get("keyword", None)
+        keyword = query.pop("keyword", None)
         query_data = self.queryset
         if keyword:
             query_data = query_data.filter(
@@ -21,7 +21,7 @@ class BlogView(ModelViewSet):
                 Q(tags__title__icontains=keyword) |
                 Q(tags__title__iexact=keyword)
             ).distinct()
-        return query_data
+        return query_data.filter(**query)
 
 
 class BlogCommentView(ModelViewSet):
