@@ -59,5 +59,5 @@ class SimilarBlogs(ListAPIView):
         except Exception:
             return []
         blogs = self.queryset.filter(
-            tags__id__in=[tag.id for tag in blog_tags]).exclude(id=blog_id)
+            tags__id__in=[tag.id for tag in blog_tags]).exclude(id=blog_id)[:5]
         return blogs
