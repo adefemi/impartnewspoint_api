@@ -13,6 +13,7 @@ class BlogView(ModelViewSet):
     def get_queryset(self):
         query = self.request.query_params.dict()
         keyword = query.pop("keyword", None)
+        query.pop("page", None)
         query_data = self.queryset
         if keyword:
             query_data = query_data.filter(
@@ -30,6 +31,7 @@ class BlogCommentView(ModelViewSet):
 
     def get_queryset(self):
         query = self.request.query_params.dict()
+        query.pop("page", None)
         return self.queryset.filter(**query)
 
 
