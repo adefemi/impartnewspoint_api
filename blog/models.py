@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from tinymce.models import HTMLField
 from django.utils.text import slugify
 
 
@@ -19,7 +18,7 @@ class Blog(models.Model):
     slug = models.SlugField(default="", editable=False, max_length=255)
     author = models.ForeignKey(
         User, related_name="blog_author", on_delete=models.CASCADE)
-    content = HTMLField()
+    content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

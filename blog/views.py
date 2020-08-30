@@ -3,12 +3,14 @@ from .serializer import (Blog, BlogComment, BlogTag,
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from django.db.models import Count, Q
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 class BlogView(ModelViewSet):
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
     lookup_field = "slug"
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         query = self.request.query_params.dict()
@@ -38,6 +40,7 @@ class BlogCommentView(ModelViewSet):
 class BlogTagView(ModelViewSet):
     queryset = BlogTag.objects.all()
     serializer_class = BlogTagSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
 
 class TopBlogs(ListAPIView):

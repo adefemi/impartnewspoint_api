@@ -38,6 +38,12 @@ class MediaCloudinaryStorage(Storage):
         if resource_type is not None:
             self.RESOURCE_TYPE = resource_type
 
+    def isdir(self, name):
+        if not name:  # Empty name is a directory
+            return True
+
+        return False
+
     def _get_resource_type(self, name):
         """
         Implemented to allow different resource types per file name
@@ -57,7 +63,8 @@ class MediaCloudinaryStorage(Storage):
         return file
 
     def _upload(self, name, content):
-        options = {'use_filename': True, 'resource_type': self._get_resource_type(name), 'tags': self.TAG}
+        options = {'use_filename': True, 'resource_type': self._get_resource_type(
+            name), 'tags': self.TAG}
         folder = os.path.dirname(name)
         if folder:
             options['folder'] = folder
@@ -71,12 +78,14 @@ class MediaCloudinaryStorage(Storage):
         return response['public_id']
 
     def delete(self, name):
-        response = cloudinary.uploader.destroy(name, invalidate=True, resource_type=self._get_resource_type(name))
+        response = cloudinary.uploader.destroy(
+            name, invalidate=True, resource_type=self._get_resource_type(name))
         return response['result'] == 'ok'
 
     def _get_url(self, name):
         name = self._prepend_prefix(name)
-        cloudinary_resource = cloudinary.CloudinaryResource(name, default_resource_type=self._get_resource_type(name))
+        cloudinary_resource = cloudinary.CloudinaryResource(
+            name, default_resource_type=self._get_resource_type(name))
         return cloudinary_resource.url
 
     def url(self, name):
@@ -212,8 +221,10 @@ class StaticCloudinaryStorage(MediaCloudinaryStorage):
             return name[:-len(extension) - 1]
 
     # we only need 2 methods of HashedFilesMixin, so we just copy them as function objects to avoid MRO complexities
-    file_hash = HashedFilesMixin.file_hash if PY3 else get_method_function(HashedFilesMixin.file_hash)
-    clean_name = HashedFilesMixin.clean_name if PY3 else get_method_function(HashedFilesMixin.clean_name)
+    file_hash = HashedFilesMixin.file_hash if PY3 else get_method_function(
+        HashedFilesMixin.file_hash)
+    clean_name = HashedFilesMixin.clean_name if PY3 else get_method_function(
+        HashedFilesMixin.clean_name)
 
     def _exists_with_etag(self, name, content):
         """
@@ -232,7 +243,8 @@ class StaticCloudinaryStorage(MediaCloudinaryStorage):
         """
         Saves only when a file with a name and a content is not already uploaded to Cloudinary.
         """
-        name = self.clean_name(name)  # to change to UNIX style path on windows if necessary
+        name = self.clean_name(
+            name)  # to change to UNIX style path on windows if necessary
         if not self._exists_with_etag(name, content):
             content.seek(0)
             super(StaticCloudinaryStorage, self)._save(name, content)
@@ -266,9 +278,11 @@ class ManifestCloudinaryStorage(FileSystemStorage):
     then you are guaranteed the manifest will be used in all production environment,
     including Heroku and AWS Elastic Beanstalk.
     """
+
     def __init__(self, location=None, base_url=None, *args, **kwargs):
         location = app_settings.STATICFILES_MANIFEST_ROOT if location is None else location
-        super(ManifestCloudinaryStorage, self).__init__(location, base_url, *args, **kwargs)
+        super(ManifestCloudinaryStorage, self).__init__(
+            location, base_url, *args, **kwargs)
 
 
 class HashCloudinaryMixin(object):
@@ -286,7 +300,8 @@ class HashCloudinaryMixin(object):
                 content = open(absolute_path, 'rb')
             except (IOError, OSError) as e:
                 if e.errno == errno.ENOENT:
-                    raise ValueError("The file '%s' could not be found with %r." % (clean_name, self))
+                    raise ValueError(
+                        "The file '%s' could not be found with %r." % (clean_name, self))
                 else:
                     raise
             content = File(content)
@@ -311,7 +326,8 @@ class HashCloudinaryMixin(object):
 
     def post_process(self, paths, dry_run=False, **options):
         original_exists = self.exists
-        self.exists = lambda name: False  # temporarily overwritten to prevent any exist check
+        # temporarily overwritten to prevent any exist check
+        self.exists = lambda name: False
         for response in super(HashCloudinaryMixin, self).post_process(paths, dry_run, **options):
             yield response
         self.exists = original_exists
@@ -330,7 +346,8 @@ class HashCloudinaryMixin(object):
                 paths[clean_path] = paths[path]
 
     def save_manifest(self):
-        payload = {'paths': self.hashed_files, 'version': self.manifest_version}
+        payload = {'paths': self.hashed_files,
+                   'version': self.manifest_version}
         if os.name == 'nt':
             paths = payload['paths']
             self.add_unix_path_keys_to_paths(paths)
@@ -340,7 +357,8 @@ class HashCloudinaryMixin(object):
         self.manifest_storage._save(self.manifest_name, ContentFile(contents))
 
     # we only need 1 method of HashedFilesMixin, so we just copy it as function objects to avoid MRO complexities
-    stored_name = HashedFilesMixin.stored_name if PY3 else get_method_function(HashedFilesMixin.stored_name)
+    stored_name = HashedFilesMixin.stored_name if PY3 else get_method_function(
+        HashedFilesMixin.stored_name)
 
 
 class StaticHashedCloudinaryStorage(HashCloudinaryMixin, ManifestFilesMixin, StaticCloudinaryStorage):
