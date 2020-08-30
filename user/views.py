@@ -40,3 +40,19 @@ class MarkettingView(ModelViewSet):
                 marketting_id=serializer.data["id"], banner=banner) for banner in banners])
 
         return Response(serializer.data, status=201)
+
+    def update(self, req, *args, **kwargs):
+        banners = req.data.pop("banners", None)
+        instance = self.get_object()
+        serializer = self.serializer_class(
+            data=req.data, instance=instance, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        if banners:
+            MarkettingBanners.objects.filter(
+                marketting_id=instance.id).delete()
+            MarkettingBanners.objects.bulk_create([MarkettingBanners(
+                marketting_id=serializer.data["id"], banner=banner) for banner in banners])
+
+        return Response(serializer.data, status=201)
