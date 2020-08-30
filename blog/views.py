@@ -45,7 +45,7 @@ class BlogView(ModelViewSet):
                     blogTag = blogTag[0]
                     blog.tags.add(blogTag)
 
-        return Response(serializer.data)
+        return Response(self.serializer_class(blog).data)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
