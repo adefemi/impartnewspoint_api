@@ -31,7 +31,7 @@ class BlogView(ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = Helper.normalizer_request(request.data)
         tags = data.pop("tags", None)
-        data.append({
+        data.update({
             author_id: request.user.id
         })
         serializer = self.serializer_class(data=data)
