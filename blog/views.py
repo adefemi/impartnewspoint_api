@@ -30,7 +30,7 @@ class BlogView(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = Helper.normalizer_request(request.data)
-        tags = data.pop(tags, None)
+        tags = data.pop("tags", None)
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         blog = Blog.objects.create(**serializer.validated_data)
@@ -47,7 +47,7 @@ class BlogView(ModelViewSet):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         data = Helper.normalizer_request(request.data)
-        tags = data.pop(tags, None)
+        tags = data.pop("tags", None)
         serializer = self.serializer_class(
             data=data, instance=instance, partial=True)
         serializer.is_valid(raise_exception=True)
