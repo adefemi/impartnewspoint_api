@@ -7,7 +7,7 @@ class BlogTagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogTag
-        fields = ("title",)
+        fields = ("id", "title",)
 
 
 class BlogSerializer(serializers.ModelSerializer):
