@@ -55,4 +55,4 @@ class MarkettingView(ModelViewSet):
             MarkettingBanners.objects.bulk_create([MarkettingBanners(
                 marketting_id=serializer.data["id"], banner=banner) for banner in banners])
 
-        return Response(serializer.data, status=201)
+        return Response(serializer.data)
