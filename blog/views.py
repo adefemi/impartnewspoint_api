@@ -4,6 +4,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from django.db.models import Count, Q
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django_api.helper import Helper
+from rest_framework.response import Response
 
 
 class BlogView(ModelViewSet):
@@ -25,6 +27,41 @@ class BlogView(ModelViewSet):
                 Q(tags__title__iexact=keyword)
             ).distinct()
         return query_data.filter(**query)
+
+    def create(self, request, *args, **kwargs):
+        data = Helper.normalizer_request(request.data)
+        tags = data.pop(tags, None)
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        blog = Blog.objects.create(**serializer.validated_data)
+
+        if tags:
+            for tag in tags:
+                blogTag = BlogTag.objects.filter(title=tag["title"])
+                if blogTag:
+                    blogTag = blogTag[0]
+                    blog.tags.add(blogTag)
+
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = Helper.normalizer_request(request.data)
+        tags = data.pop(tags, None)
+        serializer = self.serializer_class(
+            data=data, instance=instance, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        if tags:
+            instance.tags.clear()
+            for tag in tags:
+                blogTag = BlogTag.objects.filter(title=tag["title"])
+                if blogTag:
+                    blogTag = blogTag[0]
+                    instance.tags.add(blogTag)
+
+        return Response(serializer.data)
 
 
 class BlogCommentView(ModelViewSet):

@@ -11,7 +11,7 @@ class BlogTagSerializer(serializers.ModelSerializer):
 
 
 class BlogSerializer(serializers.ModelSerializer):
-    tags = BlogTagSerializer(many=True)
+    tags = BlogTagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
     author_id = serializers.IntegerField(write_only=True)
     comment_count = serializers.SerializerMethodField("get_comment_count")
