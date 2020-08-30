@@ -26,7 +26,7 @@ class GenericFileView(ModelViewSet):
 
 class MarkettingView(ModelViewSet):
     queryset = Marketting.objects.all()
-    serializer_class = GenericFileSerializer
+    serializer_class = MarkettingSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, req, *args, **kwargs):
