@@ -6,6 +6,7 @@ from django.db.models import Count, Q
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_api.helper import Helper
 from rest_framework.response import Response
+import ast
 
 
 class BlogView(ModelViewSet):
@@ -39,6 +40,7 @@ class BlogView(ModelViewSet):
         blog = Blog.objects.create(**serializer.validated_data)
 
         if tags:
+            tags = ast.literal_eval(tags)
             for tag in tags:
                 blogTag = BlogTag.objects.filter(title=tag["title"])
                 if blogTag:
@@ -57,6 +59,7 @@ class BlogView(ModelViewSet):
         serializer.save()
 
         if tags:
+            tags = ast.literal_eval(tags)
             instance.tags.clear()
             for tag in tags:
                 blogTag = BlogTag.objects.filter(title=tag["title"])
