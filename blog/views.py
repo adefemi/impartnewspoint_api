@@ -32,7 +32,7 @@ class BlogView(ModelViewSet):
         data = Helper.normalizer_request(request.data)
         tags = data.pop("tags", None)
         data.update({
-            author_id: request.user.id
+            "author_id": request.user.id
         })
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
