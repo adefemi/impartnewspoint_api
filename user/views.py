@@ -1,13 +1,22 @@
 from .serializer import (User, UserSerializer,
                          GenericFileUpload, GenericFileSerializer, MarkettingSerializer, Marketting, MarkettingBanners)
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 
 
 class UserView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class UserMeView(APIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = UserSerializer
+
+    def get(self, request):
+        return Response(self.serializer_class(request.user).data)
 
 
 class GenericFileView(ModelViewSet):
