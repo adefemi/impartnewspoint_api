@@ -10,7 +10,7 @@ django-cors-headers==3.3.0
 django-filebrowser-no-grappelli==3.8.0
 django-grappelli==2.14.2
 django-tinymce4-lite==1.8.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djangorestframework-simplejwt==4.4.0
 idna==2.9
 isort==4.3.21
