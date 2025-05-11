@@ -20,4 +20,7 @@ staticfiles
 Vagrantfile
 celerybeat-schedule
 celerybeat.pid
-".idea/*" 
+".idea/*"
+
+# Generated data files
+blogs_export.json 
